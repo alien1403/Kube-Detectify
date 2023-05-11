@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/reset-sheet.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Kube-Detectify</title>
+</head>
+
+<body>
+    <div class="header">
+	    	<div class="header-logo">
+			<a href="{{ url_for('getHomePage') }}" class="header-logo">
+				<h1 class="header-title cool-shadow">Kube-Detectify</h1>
+            			<h5 class="header-title-small">TOOL TO IDENTIFY KUBERNETES ATTACKS</h5>
+        		</a>
+		</div>
+    </div>    
+
+    <div class="main">
+	<!-- Main section - will be split in 3 identical containers, using flexbox
+        - each main-container will have the 'flex' property set to 1, so they occupy 1/3 of the screen width -->
+        <div class="main-container">
+	    <h2>Container Administration<br> Command Abuse</h2>
+            <h5>Adversaries may abuse a container administration service to execute commands within a container. A container administration service such as the Kubernetes API server, or the kubelet may allow remote management of containers within an environment.</h5>
+            <h3>Mitigations you can make in order to keep your cluster safe:</h3>
+            <div class="main-container-examples">
+                <br>
+                <div class="main-container-example">- use read-only containers, read-only file systems</div>
+                <div class="main-container-example">- make sure containers are not running as root by default</div>
+                <div class="main-container-example">- enforce authentication and RBAC on the container service</div>
+                <br>
+            </div>
+	    <!-- When the user will press the button on each container, the '/test-console' page
+            will be rendered and the scanningType attribute will be passed -->
+
+            <!-- This containers describes the Container Administration Command Abuse technique, so the attribute will be:
+            -> command-abuse -->
+            <button class="btn-basic">
+		    <a href="{{ url_for('getConsole', scanningType='command-abuse') }}">START</a>
+	    </button>
+        </div>
+
+        <div class="main-container">
+            <h2>Container <br>Deployment</h2>
+            <h5>Adversaries may deploy a container into an environment to facilitate execution or evade defenses. In some cases, adversaries may deploy a new container to execute processes associated with a particular image or deployment, such as processes that execute or download malware.</h5> 
+            <h3>Mitigations you can make in order to keep your cluster safe:</h3>
+            <div class="main-container-examples">
+                <br>
+                <div class="main-container-example">- limit communication with the container service to local Unix sockets/remote access via SSH</div>
+                <div class="main-container-example">- require secure port access to communicate with the APIs over TLS</div>
+                <div class="main-container-example">- deny direct remote access to internal systems</div>
+                <br>
+            </div>
+	     <!-- Analogue: container-deployment -->
+            <button class="btn-basic">
+		    <a href="{{ url_for('getConsole', scanningType='container-deployment') }}">START</a>
+	    </button>
+        </div>
+
+        <div class="main-container">
+            <h2>Internal Image <br> Implanting</h2>
+            <h5>Adversaries may implant cloud or container images with malicious code to establish persistence after gaining access to an environment. Unlike Upload Malware, this technique focuses on adversaries implanting an image in a registry within a victim’s environment. </h5>
+            <h3>Mitigations you can make in order to keep your cluster safe:</h3>
+            <div class="main-container-examples">
+		<br>
+		<div class="main-container-example">- periodically check the integrity of images and containers used in cloud deployments</div>
+                <div class="main-container-example">- use content trust models that require container images be signed by trusted sources</div>
+                <div class="main-container-example">- limit permissions associated with creating and modifying platform images or containers</div>
+            	<br>
+	    </div>
+	    <!-- Analogue: image-implanting -->
+            <button class="btn-basic">
+		    <a href="{{ url_for('getConsole', scanningType='image-implanting') }}">START</a> 
+	    </button>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
+

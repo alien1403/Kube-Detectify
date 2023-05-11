@@ -1,0 +1,69 @@
+.cool-shadow{
+    text-shadow: -0.5px -0.5px 0px var(--cl-main),
+                1px 1px 0px var(--cl-main),
+                2px 2px 0px var(--cl-stroke);
+}
+
+/* Buttons on the right side of the console, using flex to display 
+them one next to the other properly */
+.btns-box{ display: flex;}
+.btn-basic{
+    background: var(--cl-stroke);
+    font-size: 0.8em;
+    padding:0.5rem;
+    margin-bottom: calc(var(--spacing) / 2);
+}
+.btn-basic-blue{ background: var(--cl-main); margin-left: 0.5rem;}
+
+/* Warning messages */
+.warning-thick{ font-weight: 800; }
+.warning{ color: rgb(224, 38, 38); }
+
+/* Wrap the two sides inside a main div & position them
+using flexbox */
+.main{ display: flex; padding: 0;}
+.main-left, .main-right{ flex:1; padding: calc( var(--spacing) / 2);}
+
+/* Left side of the console */
+/* that occupies 1/4 of the 'main' div space */
+.main-left 
+.header-title{
+    font-size: 2em;
+    text-align: left;
+}
+
+.main-left
+.header-title-small{
+    margin-top:0.25rem;
+}
+
+.main-left-container{ color:white;}
+.main-left-container .btn-basic{ font-size: 0.7em;}
+.main-left-container p{ font-size:0.9em; padding: 0.25rem 0; color:white;}
+
+/* Right side of the console */
+/* that occupies 3/4 of the 'main' div space */
+/* and in case if the content is longer than 100vh (100% of the device's height),
+it will be a scrollable div */
+.main-right{
+    flex: 3;
+    background: var(--cl-ternary);
+    color: white;
+    font-weight: 600;
+    height: 100vh;
+    overflow-y: scroll;
+}
+
+/* Console Scrollbar for the right side*/
+.main-right p{ line-height: 1.15;}
+.main-right .warning{ color: rgb(224, 38, 38); }
+.main-right::-webkit-scrollbar {
+    width: 10px;
+}
+.main-right::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: var(--cl-main);
+}
+
+
+

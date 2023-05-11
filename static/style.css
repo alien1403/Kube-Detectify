@@ -1,0 +1,139 @@
+/* General CSS: setting the font, line-height, background
+and some root variables */
+body{
+    font-family: 'Montserrat', sans-serif;
+    background: var(--cl-main);
+    line-height: 1.5;
+}
+
+:root{
+    --spacing: 2rem;
+    --cl-stroke: #FF4C29;
+    --cl-main: #04101a;
+    --cl-second: #2C394B;
+    --cl-ternary: #334756;
+    --cool-shadow: 2px;
+}
+
+.cool-shadow{
+    text-shadow: -1px -1px 0px var(--cl-main),
+                2px 2px 0px var(--cl-main),
+                4px 4px 0px var(--cl-stroke);
+}
+
+
+/* BUTTON that will be used in every page */
+.btn-basic{
+    font-family: 'Montserrat', sans-serif;
+    background: var(--cl-main);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 0.75rem;
+    margin-top: 0.5rem;
+    transition: 0.4s;
+    letter-spacing: 2px;
+}
+.btn-basic:hover{
+    cursor: pointer;
+    background: var(--cl-stroke);
+}
+.btn-basic a, .btn-basic a:hover{
+    color: white;
+    text-decoration: none;
+}
+
+/* Header */
+.header-logo a,
+.main-left a,
+.header-logo a:visited,
+.main-left a:visited{ text-decoration: inherit; color: inherit;}
+.header{padding:var(--spacing)}
+.header-logo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.header-title{
+    font-size: 4rem;
+    font-weight: 800;
+    text-align: center;
+    color: var(--cl-ternary);
+}
+
+.header-title-small{
+    color: var(--cl-stroke);
+    font-weight: 600;
+    letter-spacing: 2px;
+    margin-top: calc(var(--spacing) / 2);
+}
+
+/* Home-Main section */
+.main{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-gap: var(--spacing);
+    padding: var(--spacing);
+}
+
+/* Main container */
+.main-container{
+    position: relative;
+    background: var(--cl-second);
+    color: white;
+    padding: calc(var(--spacing) / 1.5);
+}
+
+.main-container h2, .main-left-container h2{
+    color: var(--cl-stroke);
+    font-weight: 600;
+}
+
+.main-container h5{  padding: 0.5rem 0; }
+.main-container ul{ list-style: none;}
+
+/* Main container overlay */
+
+.main-container-overlay{
+    position: absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+
+    z-index:2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba( 255, 255, 255, 0.3 );
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 3px );
+
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--cl-ternary);
+}
+
+.main-container-example{ font-size:  0.8em;}
+
+/* //////////////////////////
+///// Responsiveness /////
+////////////////////////// */
+
+@media screen and (max-width: 900px){
+    .main{
+        display: flex; 
+        flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 576px){
+    body{ line-height: 1.2;}
+    :root{ --spacing: 1rem;}
+}
+
+
+

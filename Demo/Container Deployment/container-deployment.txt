@@ -1,0 +1,3 @@
+kubectl get pods \
+kubectl exec -it xmrig -- /bin/bash \
+htop
